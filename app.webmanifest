@@ -1,0 +1,16 @@
+{
+  "name": "Nowenna Pompejańska",
+  "short_name": "Nowenna",
+  "description": "54-dniowa nowenna różańcowa do Matki Bożej z Pompei — offline, w 10 językach.",
+  "lang": "pl",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf9f6",
+  "theme_color": "#faf9f6",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

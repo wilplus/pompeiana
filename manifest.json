@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "package_version": "1.0.0",
+  "generated": "2026-06-22",
+  "name": "Nowenna Pompejańska",
+  "description": "Baza modlitw 54-dniowej nowenny pompejańskiej w 10 językach (offline-first)",
+  "languages_supported": ["pl","it","fr","es","de","la","ru","uk","be","zh"],
+  "translit_languages": ["ru","uk","be","zh"],
+  "mysteries_count": 20,
+  "days_count": 54,
+  "files": ["languages.json","common_prayers.json","mysteries.json","schedule.json"]
+}

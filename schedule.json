@@ -1,0 +1,471 @@
+{
+  "version": "1.0",
+  "_note": "Nowenna pompejańska trwa 54 dni: 27 dni błagalnych + 27 dni dziękczynnych. Codzienna struktura modlitwy jest taka sama; różni się tylko modlitwa zamykająca w zależności od fazy.",
+  "phases": {
+    "supplicatory": {
+      "name": {
+        "pl": "Część błagalna",
+        "it": "Parte di supplica",
+        "fr": "Partie de supplication",
+        "es": "Parte de súplica",
+        "de": "Bittteil",
+        "la": "Pars supplicans",
+        "ru": "Часть прошения",
+        "ru_translit": "Chast' prosheniya",
+        "uk": "Частина благальна",
+        "uk_translit": "Chastyna blahal'na",
+        "be": "Частка ўмольная",
+        "be_translit": "Častka ŭmol'naja",
+        "zh": "祈求部分",
+        "zh_translit": "Qíqiú bùfèn"
+      },
+      "days": "1-27",
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    "thanksgiving": {
+      "name": {
+        "pl": "Część dziękczynna",
+        "it": "Parte di ringraziamento",
+        "fr": "Partie d'action de grâces",
+        "es": "Parte de acción de gracias",
+        "de": "Dankteil",
+        "la": "Pars gratiarum actionis",
+        "ru": "Часть благодарения",
+        "ru_translit": "Chast' blagodareniya",
+        "uk": "Частина подяки",
+        "uk_translit": "Chastyna podiaky",
+        "be": "Частка падзякі",
+        "be_translit": "Častka padziaki",
+        "zh": "感恩部分",
+        "zh_translit": "Gǎn'ēn bùfèn"
+      },
+      "days": "28-54",
+      "closing_prayer_id": "prayer_thanksgiving"
+    }
+  },
+  "daily_structure": [
+    {
+      "step": 1,
+      "action": "prayer",
+      "prayer_id": "sign_of_cross",
+      "note": "Znak krzyża"
+    },
+    {
+      "step": 2,
+      "action": "prayer",
+      "prayer_id": "opening_acclamation",
+      "note": "Akt strzelisty otwarcia"
+    },
+    {
+      "step": 3,
+      "action": "prayer",
+      "prayer_id": "intention_prompt",
+      "note": "Intencja użytkownika (przechowywana w localStorage)"
+    },
+    {
+      "step": 4,
+      "action": "prayer",
+      "prayer_id": "credo",
+      "note": "Wierzę w Boga"
+    },
+    {
+      "step": 5,
+      "action": "prayer",
+      "prayer_id": "pater_noster",
+      "note": "Ojcze nasz"
+    },
+    {
+      "step": 6,
+      "action": "prayer",
+      "prayer_id": "ave_maria",
+      "repetitions": 3,
+      "note": "3x Zdrowaś Maryjo"
+    },
+    {
+      "step": 7,
+      "action": "prayer",
+      "prayer_id": "gloria_patri",
+      "note": "Chwała Ojcu"
+    },
+    {
+      "step": 8,
+      "action": "mysteries_loop",
+      "mysteries_count": 20,
+      "per_mystery": [
+        {
+          "action": "display_name"
+        },
+        {
+          "action": "display_scripture_reference_and_optional_user_text"
+        },
+        {
+          "action": "display_meditation"
+        },
+        {
+          "action": "prayer",
+          "prayer_id": "pater_noster"
+        },
+        {
+          "action": "prayer",
+          "prayer_id": "ave_maria",
+          "repetitions": 10
+        },
+        {
+          "action": "prayer",
+          "prayer_id": "gloria_patri"
+        }
+      ]
+    },
+    {
+      "step": 9,
+      "action": "prayer",
+      "prayer_id": "sub_tuum_praesidium",
+      "note": "Pod Twoją obronę"
+    },
+    {
+      "step": 10,
+      "action": "prayer",
+      "prayer_id_dynamic": "closing_prayer_id_from_phase",
+      "note": "Modlitwa zamykająca (zależy od fazy: błagalna dla dni 1-27, dziękczynna dla dni 28-54)"
+    },
+    {
+      "step": 11,
+      "action": "prayer",
+      "prayer_id": "closing_acclamation",
+      "repetitions": 3,
+      "note": "3x akt strzelisty końcowy"
+    },
+    {
+      "step": 12,
+      "action": "prayer",
+      "prayer_id": "sign_of_cross",
+      "note": "Znak krzyża"
+    }
+  ],
+  "days": [
+    {
+      "day_number": 1,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 2,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 3,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 4,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 5,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 6,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 7,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 8,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 9,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 10,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 11,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 12,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 13,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 14,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 15,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 16,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 17,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 18,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 19,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 20,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 21,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 22,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 23,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 24,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 25,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 26,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 27,
+      "phase": "supplicatory",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_supplicatory"
+    },
+    {
+      "day_number": 28,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 29,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 30,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 31,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 32,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 33,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 34,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 35,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 36,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 37,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 38,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 39,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 40,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 41,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 42,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 43,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 44,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 45,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 46,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 47,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 48,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 49,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 50,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 51,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 52,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 53,
+      "phase": "thanksgiving",
+      "is_final_day": false,
+      "closing_prayer_id": "prayer_thanksgiving"
+    },
+    {
+      "day_number": 54,
+      "phase": "thanksgiving",
+      "is_final_day": true,
+      "closing_prayer_id": "prayer_thanksgiving"
+    }
+  ]
+}

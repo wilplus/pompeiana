@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "languages": [
+    {"code":"pl","name_native":"polski","name_en":"Polish","script":"latin","has_translit":false},
+    {"code":"it","name_native":"italiano","name_en":"Italian","script":"latin","has_translit":false},
+    {"code":"fr","name_native":"français","name_en":"French","script":"latin","has_translit":false},
+    {"code":"es","name_native":"español","name_en":"Spanish","script":"latin","has_translit":false},
+    {"code":"de","name_native":"Deutsch","name_en":"German","script":"latin","has_translit":false},
+    {"code":"la","name_native":"latine","name_en":"Latin","script":"latin","has_translit":false},
+    {"code":"ru","name_native":"русский","name_en":"Russian","script":"cyrillic","has_translit":true,"translit_key":"ru_translit","translit_system":"ALA-LC"},
+    {"code":"uk","name_native":"українська","name_en":"Ukrainian","script":"cyrillic","has_translit":true,"translit_key":"uk_translit","translit_system":"BGN/PCGN"},
+    {"code":"be","name_native":"беларуская","name_en":"Belarusian","script":"cyrillic","has_translit":true,"translit_key":"be_translit","translit_system":"Łacinka"},
+    {"code":"zh","name_native":"中文","name_en":"Chinese","script":"hanzi","has_translit":true,"translit_key":"zh_translit","translit_system":"Hanyu Pinyin"}
+  ]
+}
