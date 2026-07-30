@@ -8,6 +8,7 @@ import {
 } from "./store.js";
 import { ui, pick, pickTranslit, formatDay, CATEGORY } from "./i18n.js";
 import { buildDay } from "./sequence.js";
+import { resolveUser, revalidate, signInPassword, signOut, currentUser, signupUrl, resetPasswordUrl } from "./auth.js";
 
 const root = document.getElementById("app");
 let dayCtx = null;        // cached buildDay() result for state.currentDay
@@ -41,7 +42,8 @@ function render({ preserveScroll = false } = {}) {
   document.documentElement.lang = state.lang;
 
   let screen;
-  if (state.finished) screen = renderFinished();
+  if (!state.user) screen = renderLogin();
+  else if (state.finished) screen = renderFinished();
   else if (state.view === "pray") screen = renderPray();
   else if (state.view === "day-done") screen = renderDayDone();
   else screen = renderHome();
@@ -96,12 +98,87 @@ function renderLangSheet() {
     );
   }
 
+  if (state.user) {
+    rows.push(
+      h("div", { class: "sheet-account" },
+        h("div", { class: "acct-line" },
+          h("span", { class: "acct-label" }, ui("account", L())),
+          h("span", { class: "acct-email" }, state.user.email || ""),
+        ),
+        h("button", { class: "btn btn-ghost btn-block", onclick: doSignOut }, ui("sign_out", L())),
+      )
+    );
+  }
+
   return h("div", { class: "sheet-backdrop", onclick: (e) => { if (e.target.classList.contains("sheet-backdrop")) close(); } },
     h("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": ui("language", L()) },
       h("div", { class: "sheet-grab", "aria-hidden": "true" }),
       ...rows,
     )
   );
+}
+
+async function doSignOut() {
+  sheetOpen = false;
+  await signOut();
+  state.user = null;
+  state.view = "home";
+  render();
+}
+
+// --- LOGIN GATE ------------------------------------------------------------
+function renderLogin() {
+  const wrap = h("div", { class: "screen login" });
+  wrap.appendChild(h("header", { class: "home-top" }, h("span", { class: "home-top-spacer" }), langButton()));
+
+  const card = h("div", { class: "login-card" });
+  card.appendChild(h("div", { class: "login-mark", "aria-hidden": "true", html: MARK_SVG }));
+  card.appendChild(h("h1", { class: "login-title" }, ui("signin_title", L())));
+  card.appendChild(h("p", { class: "login-sub" }, ui("signin_sub", L())));
+
+  const err = h("p", { class: "login-error", role: "alert", style: "display:none" });
+  const email = h("input", { type: "email", class: "field", autocomplete: "email", inputmode: "email", placeholder: ui("email_label", L()), "aria-label": ui("email_label", L()) });
+  const pass = h("input", { type: "password", class: "field", autocomplete: "current-password", placeholder: ui("password_label", L()), "aria-label": ui("password_label", L()) });
+  const btn = h("button", { class: "btn btn-primary btn-block" }, ui("signin_btn", L()));
+
+  const submit = async () => {
+    const e = email.value.trim(), p = pass.value;
+    if (!e || !p) return;
+    err.style.display = "none";
+    btn.disabled = true;
+    btn.textContent = ui("signing_in", L());
+    try {
+      const user = await signInPassword(e, p);
+      state.user = user || currentUser();
+      revalidate();
+      if (state.startDate && !state.finished) state.view = "home";
+      render();
+    } catch {
+      err.textContent = ui("signin_error", L());
+      err.style.display = "block";
+      btn.disabled = false;
+      btn.textContent = ui("signin_btn", L());
+    }
+  };
+  btn.addEventListener("click", submit);
+  email.addEventListener("keydown", (ev) => { if (ev.key === "Enter") pass.focus(); });
+  pass.addEventListener("keydown", (ev) => { if (ev.key === "Enter") submit(); });
+
+  card.appendChild(
+    h("div", { class: "login-form" },
+      h("label", { class: "field-label" }, ui("email_label", L())), email,
+      h("label", { class: "field-label" }, ui("password_label", L())), pass,
+      err, btn,
+    )
+  );
+  card.appendChild(
+    h("div", { class: "login-links" },
+      h("a", { class: "linkish", href: resetPasswordUrl, target: "_blank", rel: "noopener" }, ui("forgot_password", L())),
+      h("a", { class: "linkish", href: signupUrl, target: "_blank", rel: "noopener" }, ui("no_account", L())),
+    )
+  );
+  wrap.appendChild(h("main", { class: "login-main" }, card));
+  return wrap;
 }
 
 // --- HOME ------------------------------------------------------------------
@@ -556,16 +633,22 @@ const ARROW_R = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" str
 const FLAME_SVG = '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2c1 3-2 4-2 7a2 2 0 104 0c0-1 0-1 .5-2 1.5 1.5 2.5 3.5 2.5 6a5 5 0 11-10 0c0-4 5-6 5-11z"/></svg>';
 const BOOK_SVG = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v15H5.5A1.5 1.5 0 014 17.5z"/><path d="M20 5.5C20 4.7 19.3 4 18.5 4H13v15h5.5a1.5 1.5 0 001.5-1.5z"/></svg>';
 const CROWN_SVG = '<svg viewBox="0 0 48 48" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 34h32M8 34l-2-16 9 7 9-13 9 13 9-7-2 16"/></svg>';
+// WillpowerLab three-dot wordmark mark
+const MARK_SVG = '<svg viewBox="0 0 56 16" width="52" height="15" fill="currentColor"><circle cx="8" cy="8" r="5.2"/><circle cx="28" cy="8" r="5.2"/><circle cx="48" cy="8" r="5.2"/></svg>';
 
 // --- boot ------------------------------------------------------------------
 (async function boot() {
   try {
     await loadData();
-    if (state.startDate && !state.finished) state.view = "home";
-    render();
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("sw.js").catch(() => {});
     }
+    state.user = await resolveUser();
+    if (state.user) {
+      revalidate();
+      if (state.startDate && !state.finished) state.view = "home";
+    }
+    render();
   } catch (e) {
     root.replaceChildren(h("div", { class: "screen-pad" },
       h("h1", {}, "Błąd / Error"),

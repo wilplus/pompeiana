@@ -17,6 +17,7 @@ export const state = {
   scripture: {},       // { mysteryId: { langKey: userText } }
   // ephemeral
   view: "home",        // "home" | "pray" | "day-done"
+  user: null,          // signed-in WillpowerLab user (from Supabase), or null
 };
 
 function detectLang() {
