@@ -50,11 +50,16 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overscroll-behavior-y: none;
+  /* Kill the iOS "double-tap to zoom" delay/zoom when tapping quickly
+     (e.g. counting beads); pinch-zoom stays available for accessibility. */
+  touch-action: manipulation;
 }
 
 noscript { display: block; padding: 2rem; text-align: center; }
 
-button { font-family: inherit; cursor: pointer; }
+button { font-family: inherit; cursor: pointer; touch-action: manipulation; }
+/* Rapid taps on controls shouldn't select text or trigger zoom gestures. */
+.counter-tap, .btn, .navbar, .bar, .lang-btn, .icon-btn, .bead, .intention-strip { -webkit-user-select: none; user-select: none; }
 
 .screen {
   max-width: var(--maxw);
