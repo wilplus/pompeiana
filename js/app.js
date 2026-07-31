@@ -633,8 +633,9 @@ const ARROW_R = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" str
 const FLAME_SVG = '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2c1 3-2 4-2 7a2 2 0 104 0c0-1 0-1 .5-2 1.5 1.5 2.5 3.5 2.5 6a5 5 0 11-10 0c0-4 5-6 5-11z"/></svg>';
 const BOOK_SVG = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v15H5.5A1.5 1.5 0 014 17.5z"/><path d="M20 5.5C20 4.7 19.3 4 18.5 4H13v15h5.5a1.5 1.5 0 001.5-1.5z"/></svg>';
 const CROWN_SVG = '<svg viewBox="0 0 48 48" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 34h32M8 34l-2-16 9 7 9-13 9 13 9-7-2 16"/></svg>';
-// WillpowerLab three-dot wordmark mark
-const MARK_SVG = '<svg viewBox="0 0 56 16" width="52" height="15" fill="currentColor"><circle cx="8" cy="8" r="5.2"/><circle cx="28" cy="8" r="5.2"/><circle cx="48" cy="8" r="5.2"/></svg>';
+// pompeiana mark: the WillpowerLab small·big·small dots + a dot above & below
+// the center dot, forming a Latin cross. Uses currentColor like the original.
+const MARK_SVG = '<svg viewBox="0 0 22 24" width="26" height="28" fill="currentColor"><circle cx="3" cy="10.5" r="2.2"/><circle cx="11" cy="10.5" r="3.2"/><circle cx="19" cy="10.5" r="2.2"/><circle cx="11" cy="3" r="2.2"/><circle cx="11" cy="21" r="2.2"/></svg>';
 
 // --- boot ------------------------------------------------------------------
 (async function boot() {

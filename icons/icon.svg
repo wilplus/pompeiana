@@ -1,23 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Nowenna Pompejańska">
-  <rect width="512" height="512" rx="112" fill="#5e7186"/>
-  <g fill="none" stroke="#faf9f6" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
-    <!-- rosary loop of beads -->
-    <circle cx="256" cy="196" r="118"/>
-    <g fill="#faf9f6" stroke="none">
-      <circle cx="256" cy="78" r="13"/>
-      <circle cx="333" cy="100" r="13"/>
-      <circle cx="386" cy="158" r="13"/>
-      <circle cx="403" cy="234" r="13"/>
-      <circle cx="178" cy="100" r="13"/>
-      <circle cx="125" cy="158" r="13"/>
-      <circle cx="108" cy="234" r="13"/>
-    </g>
-    <!-- pendant cross -->
-    <path d="M256 318 v150 M210 372 h92"/>
-    <g fill="#faf9f6" stroke="none">
-      <circle cx="232" cy="300" r="11"/>
-      <circle cx="256" cy="312" r="11"/>
-      <circle cx="280" cy="300" r="11"/>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="pompeiana">
+  <!-- Based on the WillpowerLab mark: small·big·small dots (#111) on white.
+       Two dots added (top + bottom of the center dot) to form a Latin cross. -->
+  <rect width="512" height="512" fill="#ffffff"/>
+  <g fill="#111111">
+    <circle cx="130" cy="230" r="35"/>
+    <circle cx="256" cy="230" r="51"/>
+    <circle cx="382" cy="230" r="35"/>
+    <circle cx="256" cy="112" r="35"/>
+    <circle cx="256" cy="400" r="35"/>
   </g>
 </svg>
