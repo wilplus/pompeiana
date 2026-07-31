@@ -3,7 +3,7 @@
 import {
   state, loadData, save,
   setLang, setTranslit, setIntention,
-  beginNovena, setProgress, completeDay, resetDay, startNewNovena,
+  beginNovena, setProgress, completeDay, resetDay, startNewNovena, setDay,
   getScripture, setScripture,
 } from "./store.js";
 import { ui, pick, pickTranslit, formatDay, CATEGORY } from "./i18n.js";
@@ -468,8 +468,14 @@ function renderMysteryStep(step) {
   return card;
 }
 
+// Text to show: admin-shared (Supabase) wins; else a bundled public-domain
+// default for this language (e.g. French LSG); else empty.
+function scriptureText(mysteryId, lang) {
+  return getShared(mysteryId, lang) || state.data.scriptureDefaults?.[mysteryId]?.[lang] || "";
+}
+
 function renderScriptureBody(m) {
-  const existing = getShared(m.id, state.lang);
+  const existing = scriptureText(m.id, state.lang);
   const admin = isAdmin(state.user);
   const container = h("div", { class: "scripture-user" });
 
@@ -490,7 +496,7 @@ function renderScriptureBody(m) {
 // Admin-only editor: saves the passage to Supabase for ALL users.
 function openScriptureEditor(m, container) {
   const ta = h("textarea", { class: "field", rows: "6", placeholder: ui("scripture_add", L()) });
-  ta.value = getShared(m.id, state.lang);
+  ta.value = scriptureText(m.id, state.lang);
   const err = h("p", { class: "login-error", style: "display:none" });
   const saveBtn = h("button", { class: "btn btn-primary" }, ui("save", L()));
 
@@ -675,6 +681,12 @@ const MARK_SVG = '<svg viewBox="0 0 22 24" width="26" height="28" fill="currentC
     state.user = await resolveUser();
     if (state.user) {
       revalidate();
+      // Hidden set-day: ?setday=N jumps the current day, then cleans the URL.
+      const sd = parseInt(new URLSearchParams(location.search).get("setday"), 10);
+      if (Number.isInteger(sd)) {
+        setDay(sd);
+        try { history.replaceState(null, "", location.pathname); } catch { /* ignore */ }
+      }
       if (state.startDate && !state.finished) state.view = "home";
       render();
       fetchShared().then(() => render({ preserveScroll: true }));

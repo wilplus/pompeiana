@@ -100,13 +100,18 @@ export async function loadData() {
     mysteriesById,
     schedule,
     scriptureLinks: {},
+    scriptureDefaults: {},
   };
 
-  // Optional overlay: per-mystery scripture reference + YouVersion link
-  // (references and URLs only — no copyrighted text).
+  // Optional overlays (non-fatal): per-mystery reference + YouVersion link,
+  // and bundled public-domain default texts (e.g. French LSG 1910).
   try {
     const links = await fetch("scripture_links.json").then((r) => (r.ok ? r.json() : null));
     if (links?.links) state.data.scriptureLinks = links.links;
+  } catch { /* non-fatal */ }
+  try {
+    const defs = await fetch("scripture_defaults.json").then((r) => (r.ok ? r.json() : null));
+    if (defs?.defaults) state.data.scriptureDefaults = defs.defaults;
   } catch { /* non-fatal */ }
 
   restore();
@@ -154,6 +159,16 @@ export function completeDay() {
 }
 
 export function resetDay() {
+  state.progress = { stepIndex: 0, rep: 0 };
+  save();
+}
+
+// Hidden set-day (no visible control): jump the current day. Starts the
+// novena if it hasn't been started yet. Triggered via ?setday=N.
+export function setDay(n) {
+  if (!state.startDate) state.startDate = new Date().toISOString().slice(0, 10);
+  state.currentDay = clampDay(n);
+  state.finished = false;
   state.progress = { stepIndex: 0, rep: 0 };
   save();
 }
