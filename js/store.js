@@ -99,7 +99,15 @@ export async function loadData() {
     mysteries: mysteries.mysteries,
     mysteriesById,
     schedule,
+    scriptureLinks: {},
   };
+
+  // Optional overlay: per-mystery scripture reference + YouVersion link
+  // (references and URLs only — no copyrighted text).
+  try {
+    const links = await fetch("scripture_links.json").then((r) => (r.ok ? r.json() : null));
+    if (links?.links) state.data.scriptureLinks = links.links;
+  } catch { /* non-fatal */ }
 
   restore();
   return state.data;

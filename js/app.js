@@ -9,6 +9,7 @@ import {
 import { ui, pick, pickTranslit, formatDay, CATEGORY } from "./i18n.js";
 import { buildDay } from "./sequence.js";
 import { resolveUser, revalidate, signInPassword, signOut, currentUser, signupUrl, resetPasswordUrl } from "./auth.js";
+import { isAdmin, getShared, fetchShared, saveShared } from "./scripture.js";
 
 const root = document.getElementById("app");
 let dayCtx = null;        // cached buildDay() result for state.currentDay
@@ -444,11 +445,16 @@ function renderMysteryStep(step) {
   const tname = pickTranslit(m.name, L(), meta);
   if (state.showTranslit && tname) card.appendChild(h("p", { class: "translit translit-title" }, tname));
 
-  // scripture reference + user text
+  // scripture reference + optional YouVersion link + shared text (admin-editable)
   const ref = pick(m.scripture.reference_localized, L());
+  const link = state.data.scriptureLinks?.[m.id];
   const scrip = h("div", { class: "scripture" });
   scrip.appendChild(h("p", { class: "scripture-ref" },
     h("span", { class: "scripture-ico", "aria-hidden": "true", html: BOOK_SVG }), ref));
+  if (link?.url) {
+    scrip.appendChild(h("a", { class: "scripture-link", href: link.url, target: "_blank", rel: "noopener" },
+      `${ui("read_passage", L())} ↗${link.version ? " · " + link.version : ""}`));
+  }
   scrip.appendChild(renderScriptureBody(m));
   card.appendChild(scrip);
 
@@ -463,13 +469,16 @@ function renderMysteryStep(step) {
 }
 
 function renderScriptureBody(m) {
-  const existing = getScripture(m.id, state.lang);
+  const existing = getShared(m.id, state.lang);
+  const admin = isAdmin(state.user);
   const container = h("div", { class: "scripture-user" });
 
   if (existing) {
     container.appendChild(h("p", { class: "scripture-text" }, existing));
-    container.appendChild(h("button", { class: "linkish small", onclick: () => openScriptureEditor(m, container) }, ui("edit", L())));
-  } else {
+    if (admin) {
+      container.appendChild(h("button", { class: "linkish small", onclick: () => openScriptureEditor(m, container) }, ui("edit", L())));
+    }
+  } else if (admin) {
     container.appendChild(
       h("button", { class: "linkish small add-scripture", onclick: () => openScriptureEditor(m, container) },
         "+ " + ui("scripture_add", L()))
@@ -478,16 +487,35 @@ function renderScriptureBody(m) {
   return container;
 }
 
+// Admin-only editor: saves the passage to Supabase for ALL users.
 function openScriptureEditor(m, container) {
-  const existing = getScripture(m.id, state.lang);
-  const ta = h("textarea", { class: "field", rows: "5", placeholder: ui("scripture_add", L()) });
-  ta.value = existing;
+  const ta = h("textarea", { class: "field", rows: "6", placeholder: ui("scripture_add", L()) });
+  ta.value = getShared(m.id, state.lang);
+  const err = h("p", { class: "login-error", style: "display:none" });
+  const saveBtn = h("button", { class: "btn btn-primary" }, ui("save", L()));
+
+  const doSave = async () => {
+    err.style.display = "none";
+    saveBtn.disabled = true;
+    saveBtn.textContent = ui("saving", L());
+    try {
+      await saveShared(m.id, state.lang, ta.value.trim(), state.user);
+      render({ preserveScroll: true });
+    } catch {
+      err.textContent = ui("save_failed", L());
+      err.style.display = "block";
+      saveBtn.disabled = false;
+      saveBtn.textContent = ui("save", L());
+    }
+  };
+  saveBtn.addEventListener("click", doSave);
+
   container.replaceChildren(
-    h("p", { class: "field-note" }, ui("scripture_hint", L())),
-    ta,
+    h("p", { class: "field-note" }, ui("scripture_shared_note", L())),
+    ta, err,
     h("div", { class: "sheet-actions tight" },
       h("button", { class: "btn btn-ghost", onclick: () => { container.replaceChildren(renderScriptureBody(m)); } }, ui("cancel", L())),
-      h("button", { class: "btn btn-primary", onclick: () => { setScripture(m.id, state.lang, ta.value.trim()); render({ preserveScroll: true }); } }, ui("save", L())),
+      saveBtn,
     ),
   );
   ta.focus();
@@ -648,8 +676,11 @@ const MARK_SVG = '<svg viewBox="0 0 22 24" width="26" height="28" fill="currentC
     if (state.user) {
       revalidate();
       if (state.startDate && !state.finished) state.view = "home";
+      render();
+      fetchShared().then(() => render({ preserveScroll: true }));
+    } else {
+      render();
     }
-    render();
   } catch (e) {
     root.replaceChildren(h("div", { class: "screen-pad" },
       h("h1", {}, "Błąd / Error"),

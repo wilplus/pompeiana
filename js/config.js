@@ -8,3 +8,7 @@ export const SUPABASE_ANON_KEY =
 
 // WillpowerLab pages we link to (account creation / password reset live there).
 export const WILLPOWERLAB_URL = "https://www.willpowerlab.com";
+
+// Accounts allowed to edit the SHARED Bible texts (saved for everyone via Supabase).
+// Everyone else sees them read-only.
+export const ADMIN_EMAILS = ["artur@willonski.com"];

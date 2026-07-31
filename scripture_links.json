@@ -1,0 +1,23 @@
+{
+  "_note": "Per-mystery scripture references + YouVersion (bible.com) deep links, captured from the user's prior setup. References and URLs are facts (not copyrighted text). NR06 = Nuova Riveduta 2006 (it, bible id 122), LSG = Louis Segond (fr, bible id 93). Missing: joyful_1, joyful_2, glorious_2. luminous_4 reference inferred (Mt 17,1-9).",
+  "version": "1.0",
+  "links": {
+    "joyful_3":    { "ref": "Lc 2,1-20",    "version": "NR06", "url": "https://www.bible.com/bible/122/luk.2.1-20.NR06" },
+    "joyful_4":    { "ref": "Lc 2,22-39",   "version": "NR06", "url": "https://www.bible.com/bible/122/luk.2.22-39.NR06" },
+    "joyful_5":    { "ref": "Lc 2,41-52",   "version": "NR06", "url": "https://www.bible.com/bible/122/luk.2.41-52.NR06" },
+    "luminous_1":  { "ref": "Mt 3,13-17",   "version": "NR06", "url": "https://www.bible.com/bible/122/mat.3.13-17.NR06" },
+    "luminous_2":  { "ref": "Gv 2,1-12",    "version": "NR06", "url": "https://www.bible.com/bible/122/jhn.2.1-12.NR06" },
+    "luminous_3":  { "ref": "Mc 1,14-15",   "version": "NR06", "url": "https://www.bible.com/bible/122/mrk.1.14-15.NR06" },
+    "luminous_4":  { "ref": "Mt 17,1-9",    "version": "NR06", "url": "https://www.bible.com/bible/122/mat.17.1-9.NR06" },
+    "luminous_5":  { "ref": "Mt 26,26-29",  "version": "NR06", "url": "https://www.bible.com/bible/122/mat.26.26-29.NR06" },
+    "sorrowful_1": { "ref": "Lc 22,39-46",  "version": "NR06", "url": "https://www.bible.com/bible/122/luk.22.39-46.NR06" },
+    "sorrowful_2": { "ref": "Gv 19,1",      "version": "NR06", "url": "https://www.bible.com/bible/122/jhn.19.1.NR06" },
+    "sorrowful_3": { "ref": "Mt 27,27-31",  "version": "NR06", "url": "https://www.bible.com/bible/122/mat.27.27-31.NR06" },
+    "sorrowful_4": { "ref": "Gv 19,16-17",  "version": "LSG",  "url": "https://www.bible.com/bible/93/jhn.19.16-17.LSG" },
+    "sorrowful_5": { "ref": "Gv 19,25-30",  "version": "NR06", "url": "https://www.bible.com/bible/122/jhn.19.25-30.NR06" },
+    "glorious_1":  { "ref": "Mt 28,1-10",   "version": "NR06", "url": "https://www.bible.com/bible/122/mat.28.1-10.NR06" },
+    "glorious_3":  { "ref": "At 2,1-13",    "version": "LSG",  "url": "https://www.bible.com/bible/93/act.2.1-13.LSG" },
+    "glorious_4":  { "ref": "Ap 12,1",      "version": "LSG",  "url": "https://www.bible.com/bible/93/rev.12.1.LSG" },
+    "glorious_5":  { "ref": "Ap 12,1",      "version": "LSG",  "url": "https://www.bible.com/bible/93/rev.12.1.LSG" }
+  }
+}
