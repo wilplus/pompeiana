@@ -10,15 +10,27 @@ export const state = {
   lang: "pl",
   showTranslit: true,
   intention: "",
+  intentionAt: null,   // ISO stamp of the last intention edit (sync tie-break)
   startDate: null,     // ISO yyyy-mm-dd of day the novena began
   currentDay: 1,       // 1..54, the day currently being prayed
   finished: false,     // whole novena complete
   progress: { stepIndex: 0, rep: 0 }, // exact resume position within the current day
+  rev: 0,              // explicit position overrides (set-day / new novena) — see js/sync.js
   scripture: {},       // { mysteryId: { langKey: userText } }
   // ephemeral
   view: "home",        // "home" | "pray" | "day-done"
   user: null,          // signed-in WillpowerLab user (from Supabase), or null
 };
+
+// Anyone who wants to know the persisted state changed (js/sync.js does).
+// Kept as a subscription rather than a direct import so store.js stays
+// unaware of the network and the app still runs with sync.js absent.
+const listeners = new Set();
+
+export function subscribe(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
 
 function detectLang() {
   const candidates = [navigator.language, ...(navigator.languages || [])];
@@ -30,15 +42,20 @@ function detectLang() {
   return "pl";
 }
 
-export function save() {
+// `silent` suppresses the change notification — used when we are writing state
+// that CAME from the server, so adopting a remote update doesn't bounce
+// straight back as a push.
+export function save({ silent = false } = {}) {
   const payload = {
     lang: state.lang,
     showTranslit: state.showTranslit,
     intention: state.intention,
+    intentionAt: state.intentionAt,
     startDate: state.startDate,
     currentDay: state.currentDay,
     finished: state.finished,
     progress: state.progress,
+    rev: state.rev,
     scripture: state.scripture,
   };
   try {
@@ -46,6 +63,39 @@ export function save() {
   } catch (e) {
     console.warn("Could not persist state:", e);
   }
+  if (silent) return;
+  for (const fn of listeners) {
+    try { fn(); } catch (e) { console.warn("sync listener failed:", e); }
+  }
+}
+
+// The synced slice of the state — what js/sync.js reads and writes.
+// `scripture` is absent on purpose and must stay absent: the user's own Bible
+// text never leaves the device.
+export function snapshot() {
+  return {
+    rev: state.rev | 0,
+    currentDay: state.currentDay,
+    finished: state.finished,
+    progress: { stepIndex: state.progress.stepIndex | 0, rep: state.progress.rep | 0 },
+    startDate: state.startDate,
+    intention: state.intention,
+    intentionAt: state.intentionAt,
+  };
+}
+
+// Write server-won fields in without re-notifying (see `save({silent})`).
+export function applyRemote(patch) {
+  if (Number.isInteger(patch.rev)) state.rev = patch.rev;
+  if (Number.isInteger(patch.currentDay)) state.currentDay = clampDay(patch.currentDay);
+  if (typeof patch.finished === "boolean") state.finished = patch.finished;
+  if (patch.progress) {
+    state.progress = { stepIndex: patch.progress.stepIndex | 0, rep: patch.progress.rep | 0 };
+  }
+  if (typeof patch.startDate === "string") state.startDate = patch.startDate;
+  if (typeof patch.intention === "string") state.intention = patch.intention;
+  if (typeof patch.intentionAt === "string") state.intentionAt = patch.intentionAt;
+  save({ silent: true });
 }
 
 function restore() {
@@ -60,9 +110,11 @@ function restore() {
     else state.lang = detectLang();
     if (typeof p.showTranslit === "boolean") state.showTranslit = p.showTranslit;
     if (typeof p.intention === "string") state.intention = p.intention;
+    if (typeof p.intentionAt === "string") state.intentionAt = p.intentionAt;
     if (typeof p.startDate === "string") state.startDate = p.startDate;
     if (Number.isInteger(p.currentDay)) state.currentDay = clampDay(p.currentDay);
     if (typeof p.finished === "boolean") state.finished = p.finished;
+    if (Number.isInteger(p.rev)) state.rev = p.rev;
     if (p.progress && Number.isInteger(p.progress.stepIndex)) {
       state.progress = { stepIndex: p.progress.stepIndex, rep: p.progress.rep || 0 };
     }
@@ -131,7 +183,10 @@ export function setTranslit(on) {
 }
 
 export function setIntention(text) {
-  state.intention = (text || "").trim();
+  const next = (text || "").trim();
+  if (next === state.intention) return;
+  state.intention = next;
+  state.intentionAt = new Date().toISOString();
   save();
 }
 
@@ -140,6 +195,7 @@ export function beginNovena() {
   state.currentDay = 1;
   state.finished = false;
   state.progress = { stepIndex: 0, rep: 0 };
+  state.rev = (state.rev | 0) + 1;
   save();
 }
 
@@ -170,6 +226,10 @@ export function setDay(n) {
   state.currentDay = clampDay(n);
   state.finished = false;
   state.progress = { stepIndex: 0, rep: 0 };
+  // Deliberately moving the day — including BACKWARDS. Sync's default rule is
+  // "furthest position wins" so an offline device can never rewind you; the
+  // bumped rev is how an intentional move overrules that.
+  state.rev = (state.rev | 0) + 1;
   save();
 }
 
@@ -178,6 +238,7 @@ export function startNewNovena() {
   state.currentDay = 1;
   state.finished = false;
   state.progress = { stepIndex: 0, rep: 0 };
+  state.rev = (state.rev | 0) + 1;
   save();
 }
 

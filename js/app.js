@@ -10,6 +10,7 @@ import { ui, pick, pickTranslit, formatDay, CATEGORY } from "./i18n.js";
 import { buildDay } from "./sequence.js";
 import { resolveUser, revalidate, signInPassword, signOut, currentUser, signupUrl, resetPasswordUrl } from "./auth.js";
 import { isAdmin, getShared, fetchShared, saveShared } from "./scripture.js";
+import { startSync, stopSync, applyDeferred } from "./sync.js";
 
 const root = document.getElementById("app");
 let dayCtx = null;        // cached buildDay() result for state.currentDay
@@ -121,10 +122,21 @@ function renderLangSheet() {
 
 async function doSignOut() {
   sheetOpen = false;
+  stopSync();          // stop before the token goes; local state stays put
   await signOut();
   state.user = null;
   state.view = "home";
   render();
+}
+
+// Cross-device continuity, started once a user is present. Adoption re-renders,
+// and is held back while the prayer screen is open so a remote update can never
+// move the ground mid-decade.
+function beginSync() {
+  startSync({
+    onAdopt: () => render({ preserveScroll: true }),
+    canAdopt: () => state.view !== "pray",
+  });
 }
 
 // --- LOGIN GATE ------------------------------------------------------------
@@ -154,6 +166,7 @@ function renderLogin() {
       revalidate();
       if (state.startDate && !state.finished) state.view = "home";
       render();
+      beginSync();  // pulls this account's day onto this device
     } catch {
       err.textContent = ui("signin_error", L());
       err.style.display = "block";
@@ -577,7 +590,9 @@ function prevStep() {
 
 function goHome() {
   state.view = "home";
-  render();
+  // A remote update that arrived mid-prayer was parked; now is the safe moment.
+  // It re-renders itself when it lands, so only render here if it didn't.
+  if (!applyDeferred()) render();
 }
 
 // --- DAY DONE --------------------------------------------------------------
@@ -602,7 +617,7 @@ function renderDayDone() {
         h("span", {}, state.intention)));
   }
   box.appendChild(
-    h("button", { class: "btn btn-primary btn-block", onclick: () => { completeDay(); state.view = "home"; render(); } },
+    h("button", { class: "btn btn-primary btn-block", onclick: () => { completeDay(); state.view = "home"; if (!applyDeferred()) render(); } },
       ui("mark_complete", L()))
   );
   wrap.appendChild(box);
@@ -689,6 +704,7 @@ const MARK_SVG = '<svg viewBox="0 0 22 24" width="26" height="28" fill="currentC
       }
       if (state.startDate && !state.finished) state.view = "home";
       render();
+      beginSync();
       fetchShared().then(() => render({ preserveScroll: true }));
     } else {
       render();

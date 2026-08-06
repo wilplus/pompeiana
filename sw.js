@@ -1,5 +1,5 @@
 // Service worker — offline-first cache for the Pompeian Novena PWA.
-const CACHE = "pompejanka-v4";
+const CACHE = "pompejanka-v5";
 const ASSETS = [
   "./",
   "./index.html",
@@ -10,6 +10,7 @@ const ASSETS = [
   "./js/sequence.js",
   "./js/auth.js",
   "./js/scripture.js",
+  "./js/sync.js",
   "./js/config.js",
   "./scripture_links.json",
   "./scripture_defaults.json",

@@ -61,8 +61,37 @@ schedule.json           # ── /
 
 ## Stan zapisywany (localStorage, klucz `pompeiana.v1`)
 
-`lang`, `showTranslit`, `intention`, `startDate`, `currentDay`, `finished`,
-`progress {stepIndex, rep}`, `scripture {mysteryId: {lang: tekst}}`.
+`lang`, `showTranslit`, `intention`, `intentionAt`, `startDate`, `currentDay`,
+`finished`, `progress {stepIndex, rep}`, `rev`,
+`scripture {mysteryId: {lang: tekst}}`.
+
+## Ciągłość między urządzeniami (`js/sync.js`)
+
+Po zalogowaniu miejsce w nowennie wędruje za tobą: zaczynasz na telefonie,
+kończysz na laptopie. Jeden wiersz na użytkownika w tabeli
+`pompeiana_progress` (Supabase, RLS — widzisz wyłącznie swój wiersz).
+Migracja: [`supabase/pompeiana_progress.sql`](supabase/pompeiana_progress.sql),
+uruchamiana raz w Supabase → SQL Editor.
+
+Co się synchronizuje: `currentDay`, `progress {stepIndex, rep}`, `finished`,
+`startDate`, `intention`. **Czego nigdy nie wysyłamy: `scripture`** — własny
+tekst Pisma zostaje na urządzeniu. `lang` i `showTranslit` też zostają lokalne
+(to ustawienia urządzenia, nie konflikt).
+
+Reguła scalania: wygrywa **dalsza pozycja** — krotka `(rev, dzień, krok,
+paciorek)` porównywana od lewej. Dzięki temu laptop zamknięty od tygodnia nie
+cofnie telefonu, na którym się modliłeś. `rev` stoi z przodu dla jedynego
+przypadku, w którym „dalej” jest złą odpowiedzią: świadomego przesunięcia
+(`?setday=N`, nowa nowenna) — te podbijają `rev` i przebijają pozycję.
+`intention` to tekst, nie pozycja, więc scala się osobno (ostatni zapis
+wygrywa, wg `intention_at`).
+
+Synchronizacja jest **dodatkiem, nie warunkiem**: offline, po wylogowaniu lub
+przy niedostępnym Supabase wszystko cicho zawodzi i aplikacja działa dalej z
+localStorage. Modlitwa nigdy nie czeka na sieć. Aktualizacja z innego
+urządzenia nie wskoczy w trakcie modlitwy — czeka, aż wrócisz na ekran główny.
+
+Testy reguły scalania: `node --test test/`.
 
 ## Uwagi
 
